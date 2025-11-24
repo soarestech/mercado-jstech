@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ajuda</title>
+  <link rel="stylesheet" href="../css/styles.css" />
+</head>
+
+<body class="page-body">
+  <header class="page-header">
+    <h2>Ajuda</h2>
+  </header>
+
+  <main class="page-content">
+    <p>Aqui você encontrará instruções de uso e suporte.</p>
+  </main>
+  
+<!-- BOTTOM TABS INTERNOS -->
+<nav class="innerTabs">
+  <button id="goHome">
+    <img src="../images/home-48.png" alt="">
+    <span>Home</span>
+  </button>
+
+  <button id="goBack">
+    <img src="../images/arrow-48.png" alt="">
+    <span>Voltar</span>
+  </button>
+</nav>
+
+<script>
+  document.getElementById("goHome").addEventListener("click", () => {
+    window.location.href = "../index.html";
+  });
+
+  document.getElementById("goBack").addEventListener("click", () => {
+    history.back();
+  });
+</script>
+  
+</body>
+</html>
