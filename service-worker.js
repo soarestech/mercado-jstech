@@ -8,6 +8,12 @@ const URLS_TO_CACHE = [
   '/mercado-jstech/manifest.json',
 
   // 👇 Caminhos corrigidos
+  '/mercado-jstech/images/home-48.png',
+  '/mercado-jstech/images/search-48.png',
+  '/mercado-jstech/images/palette-48.png',
+  '/mercado-jstech/images/info-48.png',
+  '/mercado-jstech/images/icon-512.png',
+  
   '/mercado-jstech/images/icons/icon-192.png',
   '/mercado-jstech/images/icons/icon-512.png',
 
