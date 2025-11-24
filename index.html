@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mercado - JSTech</title>
+
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="images/icons/icon-192.png" type="image/png">
+
+  <!-- CSS externo -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<!-- SPLASH SCREEN -->
+<div id="splashScreen">
+  <img src="images/img-512.png" alt="Logo do App" class="splash-logo">
+  <h1 class="splash-title">Mercado JSTech</h1>
+  <p class="splash-version">Versão <span id="splashVersion"></span></p>
+</div>
+
+<!-- Login -->
+<div id="loginForm" class="screen">
+  <h1>Login</h1>
+  <input type="text" id="username" placeholder="Usuário" autocomplete="off">
+  <input type="password" id="password" placeholder="Senha" autocomplete="off">
+  <button id="btnLogin">Entrar</button>
+  <p id="loginMsg"></p>
+  <button id="btnGoRegister">Cadastrar Usuário</button>
+</div>
+
+<!-- Registro -->
+<div id="registerForm" class="screen">
+  <h1>Cadastro</h1>
+  <input type="text" id="regUsername" placeholder="Novo usuário">
+  <input type="password" id="regPassword" placeholder="Nova senha">
+  <button id="btnRegister">Cadastrar</button>
+  <p id="registerMsg"></p>
+  <button id="btnGoLogin">Voltar ao Login</button>
+</div>
+
+<!-- App principal -->
+<div id="app" class="screen">
+  <h1 id="mensagem">Olá, usuário! 👋</h1>
+  <button id="botao">Mudar mensagem</button>
+  <button id="tema">Alternar tema 🌙💡</button>
+  <button id="changePasswordBtn">Alterar senha 🔑</button>
+  <button id="deleteUserBtn">Excluir usuário ❌</button>
+  <button id="showUsersBtn">Ver usuários cadastrados 👥</button>
+  <button id="logout">Sair</button>
+</div>
+
+<!-- Alterar senha -->
+<div id="changePasswordForm" class="screen">
+  <h1>Alterar senha</h1>
+  <input type="password" id="newPassword" placeholder="Nova senha">
+  <button id="btnChangePassword">Salvar</button>
+  <p id="changePasswordMsg"></p>
+  <button id="btnCancelChangePassword">Cancelar</button>
+</div>
+
+<!-- Tela de usuários -->
+<div id="userListScreen" class="screen">
+  <h1>Usuários cadastrados</h1>
+  <div id="userList"></div>
+  <button id="btnBackToApp">Voltar</button>
+</div>
+
+<!-- BOTTOM TABS -->
+<nav id="bottomTabs">
+  <button data-page="app">
+    <img src="images/home-48.png" alt="">
+    <span>Home</span>
+  </button>
+
+  <button data-page="help">
+    <img src="images/search-48.png" alt="">
+    <span>Ajuda</span>
+  </button>
+
+  <button data-page="settings">
+    <img src="images/palette-48.png" alt="">
+    <span>Ajustes</span>
+  </button>
+
+  <button data-page="about">
+    <img src="images/info-48.png" alt="">
+    <span>Sobre</span>
+  </button>
+</nav>
+
+<footer class="footer">
+  <p>Versão: <span id="mercado-jstech-version"></span></p>
+</footer>
+
+<!-- JS externo -->
+<script src="js/app.js"></script>
+
+</body>
+</html>
+
+
