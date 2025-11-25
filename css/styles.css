@@ -1,99 +1,68 @@
 /* ========================= */
-/*        SEU CSS EXISTENTE  */
+/*       ESTILOS GERAIS      */
 /* ========================= */
 
 body {
+  font-family: "Segoe UI", Roboto, sans-serif;
   margin: 0;
-  font-family: Arial, sans-serif;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  padding: 0;
   min-height: 100vh;
-  background: #f5f5f5;
   color: #333;
+  background: #f5f5f5;
   transition: background 0.3s, color 0.3s;
-  padding: 20px;
 }
 
-/* Geral */
+/* Links e textos centrais */
 h1, h2, p {
   text-align: center;
 }
 
-input, button {
-  margin-top: 10px;
+.container {
+  max-width: 900px;
+  margin: 20px auto;
   padding: 10px;
-  width: 250px;
-  font-size: 16px;
 }
 
-div.screen {
-  display: none;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 20px;
+.center {
+  text-align: center;
 }
 
 button {
   cursor: pointer;
+  transition: opacity 0.2s;
 }
 
-/* Tema Dark */
+button:hover {
+  opacity: 0.9;
+}
+
+/* ========================= */
+/*        TEMA DARK/LIGHT     */
+/* ========================= */
+
 body[data-theme="dark"] {
   background: #1e1e1e;
   color: #f5f5f5;
 }
 
 body[data-theme="dark"] input,
+body[data-theme="dark"] select,
 body[data-theme="dark"] button {
   background: #333;
   color: #f5f5f5;
   border: none;
 }
 
-/* Tema Light */
 body[data-theme="light"] input,
+body[data-theme="light"] select,
 body[data-theme="light"] button {
   background: #fff;
   color: #333;
   border: 1px solid #ccc;
 }
 
-/* Rodapé */
-footer {
-  background: transparent;
-  color: #555;
-  font-size: 0.9rem;
-  position: fixed;
-  bottom: 5px;
-  right: 10px;
-  z-index: 1000;
-}
-
-/* Layout básico para páginas internas */
-.page-body {
-  margin: 0;
-  background: #f5f5f5;
-  font-family: Arial, sans-serif;
-}
-
-.page-header {
-  background: #333;
-  color: white;
-  padding: 15px;
-  text-align: center;
-  position: sticky;
-  top: 0;
-}
-
-.page-content {
-  padding: 20px;
-  text-align: center;
-  color: #333;
-}
-
 /* ========================= */
-/*     ADIÇÕES PARA SPLASH   */
+/*        SPLASH SCREEN       */
 /* ========================= */
 
 #splashScreen {
@@ -118,7 +87,7 @@ footer {
 }
 
 .splash-logo {
-  width: 120px;
+  width: 120px;   /* limitar tamanho */
   height: 120px;
   object-fit: contain;
   margin-bottom: 20px;
@@ -131,10 +100,201 @@ footer {
 }
 
 .splash-version {
-  position: absolute;
-  bottom: 25px;
   font-size: 14px;
   color: #777;
+  margin-top: 5px;
+}
+
+/* ========================= */
+/*        PÁGINA PRINCIPAL   */
+/* ========================= */
+
+body.home #app {
+  display: flex;
+  flex-direction: column; /* empilha verticalmente */
+  align-items: center;    /* centraliza horizontalmente */
+}
+
+body.home h4.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.4rem;   /* maior destaque */
+  font-weight: 450;
+  margin-bottom: 20px; /* separação do container de ícones */
+}
+
+/* Home Icons - mesmo tamanho para todos */
+/* Container dos ícones */
+#homeIcons {
+  display: flex;
+  flex-direction: column;  /* empilha verticalmente */
+  align-items: stretch;    /* faz os botões ocuparem toda a largura possível */
+  gap: 15px;
+  width: 100%;             /* ocupa toda a largura disponível */
+  max-width: 400px;        /* opcional: limita a largura máxima */
+  padding: 0 20px;         /* opcional: espaçamento lateral */
+}
+
+/* Botões da home */
+#homeIcons button {
+  display: flex;
+  flex-direction: row;      /* ícone e texto lado a lado */
+  align-items: center;
+  justify-content: flex-start; /* alinha conteúdo à esquerda */
+  gap: 10px;                /* espaço entre ícone e texto */
+  padding: 10px 20px;
+  font-size: 16px;
+  width: 100%;              /* ocupa toda a largura do container */
+  box-sizing: border-box;   /* garante que padding não estoure o botão */
+}
+
+/* Ícones dentro do botão */
+#homeIcons img {
+  width: 40px;
+  height: 40px;
+}
+
+/* ========================= */
+/*       PÁGINAS INTERNAS    */
+/* ========================= */
+
+body.page-interna {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+body.page-interna .card {
+  background: white;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  margin-bottom: 15px;
+}
+
+body.page-interna h4.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.2rem;
+  font-weight: 450;
+  margin-top: -12px;
+  margin-bottom: 20px;
+}
+
+body.page-interna .form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+body.page-interna .input-field {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+body.page-interna .input-field label {
+  font-weight: 500;
+  margin-bottom: 4px;
+  font-size: 0.9rem;
+}
+
+body.page-interna .input-field input,
+body.page-interna .input-field select {
+  padding: 8px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  height: 38px;
+  box-sizing: border-box;
+}
+
+body.page-interna .btn {
+  border: none;
+  padding: 10px 15px;
+  font-size: 0.95rem;
+  border-radius: 5px;
+  color: white;
+}
+
+body.page-interna .btn.green { background-color: #2e7d32; }
+body.page-interna .btn.red { background-color: #c62828; }
+body.page-interna .btn.blue { background-color: #1565c0; }
+body.page-interna .btn.orange { background-color: #f39c12; }
+
+body.page-interna .table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+body.page-interna .table th,
+body.page-interna .table td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+  font-size: 0.95rem;
+}
+
+body.page-interna .table th {
+  background-color: #e0e0e0;
+}
+
+body.page-interna tr.editando {
+  background-color: #fff3e0;
+  transition: background-color 0.3s ease;
+}
+
+body.page-interna tr.editando td {
+  font-weight: bold;
+  color: #e65100;
+}
+
+body.page-interna .listas-salvas {
+  max-height: 40vh;
+  overflow-y: auto;
+  padding-right: 5px;
+}
+
+body.page-interna .lista-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #fafafa;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 8px 12px;
+  margin-bottom: 8px;
+}
+
+body.page-interna .lista-info {
+  font-size: 0.9rem;
+  color: #333;
+}
+
+body.page-interna .lista-botoes {
+  display: flex;
+  gap: 8px;
+}
+
+/* Nome do mercado ao lado do título da lista */
+body.page-interna h6 {
+  display: flex;
+  align-items: center;
+  font-size: 0.85rem;
+  gap: 10px;
+}
+
+body.page-interna #nomeMercadoAtual {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1565c0;
 }
 
 /* ========================= */
@@ -161,9 +321,8 @@ footer {
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  padding: 5px;
   width: 70px;
+  padding: 5px;
 }
 
 #bottomTabs img {
@@ -177,48 +336,37 @@ footer {
   color: #444;
 }
 
-/* Aba ativa */
 #bottomTabs .active span {
   color: #000;
   font-weight: bold;
 }
 
 /* ========================= */
-/*    BOTTOM TABS INTERNOS   */
+/*        SWEET ALERTS       */
 /* ========================= */
 
-.innerTabs {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  height: 60px;
-  background: #ffffff;
-  border-top: 1px solid #ddd;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  z-index: 1500;
+.swal2-popup {
+  width: 80% !important;
+  max-width: 260px !important;
+  padding: 0.8rem !important;
+  font-size: 14px !important;
 }
 
-.innerTabs button {
-  background: none;
-  border: none;
-  flex-direction: column;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  padding: 5px;
-  width: 70px;
-}
+.swal2-title { font-size: 18px !important; }
+.swal2-html-container { font-size: 14px !important; }
+.swal2-icon { transform: scale(0.7) !important; margin-bottom: 10px !important; }
+.swal2-confirm, .swal2-cancel { font-size: 14px !important; padding: 6px 12px !important; }
 
-.innerTabs img {
-  width: 24px;
-  height: 24px;
-  margin-bottom: 3px;
-}
+/* ========================= */
+/*       RESPONSIVIDADE      */
+/* ========================= */
 
-.innerTabs span {
-  font-size: 12px;
-  color: #444;
+@media (max-width: 600px) {
+  body.page-interna .form-row { flex-direction: column; }
+  body.page-interna .input-field { width: 100%; }
+  body.page-interna button:not(.small) { width: 100%; margin-top: 6px; }
+  body.page-interna .listas-salvas { max-height: 50vh; }
+  body.page-interna .lista-card { flex-direction: column; align-items: flex-start; }
+  body.page-interna .lista-botoes { margin-top: 6px; }
+  body.page-interna #nomeMercadoAtual { font-size: 1.1rem; }
 }
