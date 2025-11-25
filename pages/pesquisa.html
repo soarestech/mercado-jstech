@@ -1,1 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pesquisa Produtos</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <!-- SweetAlert2 (alertas) -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body class="page-interna">
 
+<div class="container screen">
+  <h4 class="center">📋 Pesquisa Produtos</h4>
+
+  <!-- Formulário de cadastro -->
+  <div class="card">
+    <div class="form-row">
+      <div class="input-field">
+        <label for="mercado">Nome do Mercado</label>
+        <input id="mercado" type="text">
+      </div>
+      <div class="input-field">
+        <label for="produto">Produto</label>
+        <input id="produto" type="text">
+      </div>
+      <div class="input-field">
+        <label for="embalagem">Embalagem</label>
+        <select id="embalagem" required>
+          <option value="" disabled selected hidden>Escolha</option>
+          <option value="2 un">2 un</option>
+          <option value="8 un">8 un</option>
+          <option value="12 un">12 un</option>
+          <option value="20 un">20 un</option>
+          <option value="30 un">30 un</option>
+          <option value="1 kg">1 kg</option>
+          <option value="5 kg">5 kg</option>
+          <option value="50 g">50 g</option>
+          <option value="100 g">100 g</option>
+          <option value="250 g">250 g</option>
+          <option value="500 g">500 g</option>
+          <option value="1 L">1 L</option>
+        </select>
+      </div>
+      <div class="input-field">
+        <label for="valor">Preço (R$)</label>
+        <input id="valor" type="number" min="0" step="0.01" placeholder="0.00">
+      </div>
+    </div>
+    <div class="center">
+      <button id="adicionar" class="btn green">Adicionar</button>
+    </div>
+  </div>
+
+  <!-- Tabela de produtos cadastrados -->
+  <div class="card">
+    <h6>Itens da Lista <span id="nomeMercadoAtual"></span></h6>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Produto</th>
+          <th>Embalagem</th>
+          <th>Preço (R$)</th>
+        </tr>
+      </thead>
+      <tbody id="produtosList"></tbody>
+    </table>
+  </div>
+
+  <!-- Botões de ação -->
+  <div class="center section">
+    <button id="apagarTudo" class="btn red">Apagar Tudo</button>
+    <button id="salvarLista" class="btn blue">Salvar Lista</button>
+    <button id="exportarTXT" class="btn green">Exportar TXT</button>
+  </div>
+
+  <!-- Listas salvas -->
+  <div class="card listas-salvas">
+    <h6>Listas Salvas</h6>
+    <div id="listasContainer"></div>
+  </div>
+</div>
+
+<!-- BottomTabs -->
+<div id="bottomTabs">
+  <button class="home-btn" data-page="../index"> <!-- voltar para Home -->
+    <img src="../images/home-48.png" alt="Home">
+    <span>Home</span>
+  </button>
+
+  <button class="home-btn" data-page="listas">
+    <img src="../images/report-48.png" alt="Listas">
+    <span>Listas Salvas</span>
+  </button>
+
+  <button class="home-btn" data-page="itens">
+    <img src="../images/shopping-48.png" alt="Itens">
+    <span>Itens da Lista</span>
+  </button>
+
+  <button class="home-btn" data-page="ferramentas">
+    <img src="../images/settings-48.png" alt="Ferramentas">
+    <span>Ferramentas</span>
+  </button>
+</div>
+
+<!-- Script principal -->
+<script src="../js/app.js"></script>
+
+</body>
+</html>
