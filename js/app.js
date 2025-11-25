@@ -1,343 +1,237 @@
-// ---------------- Versão do App ----------------
-const appVersion = '1.0.0';
+// ===============================
+// app.js para outras páginas.html
+// ===============================
 
-window.addEventListener('DOMContentLoaded', () => {
-  const versionEl = document.getElementById('mercado-jstech-version');
-  if (versionEl) versionEl.textContent = appVersion;
-});
+document.addEventListener('DOMContentLoaded', () => {
 
-// ---------------- Elementos ----------------
-const loginForm = document.getElementById('loginForm');
-const registerForm = document.getElementById('registerForm');
-const app = document.getElementById('app');
-const changePasswordForm = document.getElementById('changePasswordForm');
-const userListScreen = document.getElementById('userListScreen');
-const userList = document.getElementById('userList');
-const btnBackToApp = document.getElementById('btnBackToApp');
-const showUsersBtn = document.getElementById('showUsersBtn');
+  // ---------------- Variáveis ----------------
+  const mercadoInput = document.getElementById('mercado');
+  const produtoInput = document.getElementById('produto');
+  const embalagemSelect = document.getElementById('embalagem');
+  const valorInput = document.getElementById('valor');
+  const lista = document.getElementById('produtosList'); // tbody da tabela
+  const adicionarBtn = document.getElementById('adicionar');
+  const apagarTudoBtn = document.getElementById('apagarTudo');
+  const salvarListaBtn = document.getElementById('salvarLista');
+  const exportarBtn = document.getElementById('exportarTXT');
+  const listasContainer = document.getElementById('listasContainer');
+  const nomeMercadoAtual = document.getElementById('nomeMercadoAtual');
 
-const usernameInput = document.getElementById('username');
-const passwordInput = document.getElementById('password');
-const btnLogin = document.getElementById('btnLogin');
-const loginMsg = document.getElementById('loginMsg');
-const btnGoRegister = document.getElementById('btnGoRegister');
+  let produtos = [];
+  let indiceEdicao = null;
 
-const regUsernameInput = document.getElementById('regUsername');
-const regPasswordInput = document.getElementById('regPassword');
-const btnRegister = document.getElementById('btnRegister');
-const registerMsg = document.getElementById('registerMsg');
-const btnGoLogin = document.getElementById('btnGoLogin');
+  // ---------------- Funções ----------------
+  function atualizarLista() {
+    if (!lista) return;
+    lista.innerHTML = '';
+    produtos.forEach((p, i) => {
+      const row = document.createElement('tr');
 
-const botao = document.getElementById('botao');
-const botaoTema = document.getElementById('tema');
-const logoutBtn = document.getElementById('logout');
-const changePasswordBtn = document.getElementById('changePasswordBtn');
-const deleteUserBtn = document.getElementById('deleteUserBtn');
+      row.innerHTML = `
+        <td>${p.nome}</td>
+        <td>${p.embalagem}</td>
+        <td class="${p.cor === 'green' ? 'valor-verde' : p.cor === 'red' ? 'valor-vermelho' : ''}">${p.valor.toFixed(2)}</td>
+      `;
 
-const newPasswordInput = document.getElementById('newPassword');
-const btnChangePassword = document.getElementById('btnChangePassword');
-const changePasswordMsg = document.getElementById('changePasswordMsg');
-const btnCancelChangePassword = document.getElementById('btnCancelChangePassword');
+      // Editar produto ao clicar na linha
+      row.addEventListener('click', () => {
+        produtoInput.value = p.nome;
+        embalagemSelect.value = p.embalagem;
+        valorInput.value = p.valor.toFixed(2);
+        indiceEdicao = i;
 
-const mensagem = document.getElementById('mensagem');
-const body = document.body;
+        adicionarBtn.textContent = 'Atualizar';
+        adicionarBtn.classList.remove('green');
+        adicionarBtn.classList.add('orange');
 
-let db;
+        lista.querySelectorAll('tr').forEach(tr => tr.classList.remove('editando'));
+        row.classList.add('editando');
+      });
 
-// ---------------- IndexedDB ----------------
-const request = indexedDB.open('MeuPWA', 1);
-
-request.onupgradeneeded = (event) => {
-  db = event.target.result;
-
-  if (!db.objectStoreNames.contains('usuarios')) {
-    const store = db.createObjectStore('usuarios', { keyPath: 'username' });
-    store.createIndex('username', 'username', { unique: true });
-  }
-};
-
-request.onsuccess = (event) => {
-  db = event.target.result;
-  checkLoggedUser();
-};
-
-request.onerror = (event) => console.error('Erro IndexedDB', event.target.error);
-
-// ---------------- Funções ----------------
-function showScreen(screen) {
-  loginForm.style.display = 'none';
-  registerForm.style.display = 'none';
-  app.style.display = 'none';
-  changePasswordForm.style.display = 'none';
-  userListScreen.style.display = 'none';
-
-  if (screen === 'login') loginForm.style.display = 'flex';
-  if (screen === 'register') registerForm.style.display = 'flex';
-  if (screen === 'app') app.style.display = 'flex';
-  if (screen === 'changePassword') changePasswordForm.style.display = 'flex';
-  if (screen === 'userList') userListScreen.style.display = 'flex';
-}
-
-function showApp(user) {
-  mensagem.textContent = `Olá, ${user}! 👋`;
-  showScreen('app');
-}
-
-function verificarLogin(username, password, callback) {
-  const tx = db.transaction(['usuarios'], 'readonly');
-  const store = tx.objectStore('usuarios');
-  const req = store.get(username);
-
-  req.onsuccess = () => {
-    callback(req.result && req.result.password === password);
-  };
-}
-
-function updatePassword(username, newPassword, callback) {
-  const tx = db.transaction(['usuarios'], 'readwrite');
-  const store = tx.objectStore('usuarios');
-  const req = store.get(username);
-
-  req.onsuccess = () => {
-    const user = req.result;
-    if (user) {
-      user.password = newPassword;
-      const upd = store.put(user);
-      upd.onsuccess = () => callback(true);
-      upd.onerror = () => callback(false);
-    } else callback(false);
-  };
-}
-
-function deleteUser(username, callback) {
-  const tx = db.transaction(['usuarios'], 'readwrite');
-  const store = tx.objectStore('usuarios');
-  const req = store.delete(username);
-
-  req.onsuccess = () => callback(true);
-  req.onerror = () => callback(false);
-}
-
-function checkLoggedUser() {
-  const user = localStorage.getItem('loggedUser');
-  if (user) showApp(user);
-  else showScreen('login');
-}
-
-// ---------------- Eventos ----------------
-btnLogin.addEventListener('click', () => {
-  const user = usernameInput.value;
-  const pass = passwordInput.value;
-
-  verificarLogin(user, pass, (success) => {
-    if (success) {
-      localStorage.setItem('loggedUser', user);
-      showApp(user);
-    } else {
-      loginMsg.textContent = 'Usuário ou senha incorretos!';
-    }
-  });
-});
-
-btnGoRegister.addEventListener('click', () => showScreen('register'));
-btnGoLogin.addEventListener('click', () => showScreen('login'));
-
-btnRegister.addEventListener('click', () => {
-  const user = regUsernameInput.value.trim();
-  const pass = regPasswordInput.value.trim();
-
-  if (!user || !pass) {
-    registerMsg.textContent = 'Preencha todos os campos!';
-    return;
-  }
-
-  const tx = db.transaction(['usuarios'], 'readwrite');
-  const store = tx.objectStore('usuarios');
-  const req = store.add({ username: user, password: pass });
-
-  req.onsuccess = () => {
-    registerMsg.textContent = 'Usuário cadastrado!';
-    regUsernameInput.value = '';
-    regPasswordInput.value = '';
-  };
-
-  req.onerror = () => {
-    registerMsg.textContent = 'Erro: usuário já existe!';
-  };
-});
-
-botao.addEventListener('click', () => {
-  mensagem.textContent = 'Você clicou no botão! 🚀';
-});
-
-botaoTema.addEventListener('click', () => {
-  const newTheme = body.dataset.theme === 'dark' ? 'light' : 'dark';
-  body.dataset.theme = newTheme;
-  localStorage.setItem('theme', newTheme);
-});
-
-const savedTheme = localStorage.getItem('theme');
-if (savedTheme) body.dataset.theme = savedTheme;
-
-changePasswordBtn.addEventListener('click', () => {
-  changePasswordMsg.textContent = '';
-  newPasswordInput.value = '';
-  showScreen('changePassword');
-});
-
-btnCancelChangePassword.addEventListener('click', () => {
-  showApp(localStorage.getItem('loggedUser'));
-});
-
-btnChangePassword.addEventListener('click', () => {
-  const newPass = newPasswordInput.value.trim();
-
-  if (!newPass) {
-    changePasswordMsg.textContent = 'Digite a nova senha!';
-    return;
-  }
-
-  const user = localStorage.getItem('loggedUser');
-
-  updatePassword(user, newPass, (success) => {
-    changePasswordMsg.textContent = success ? 'Senha atualizada!' : 'Erro ao atualizar';
-    if (success) newPasswordInput.value = '';
-  });
-});
-
-deleteUserBtn.addEventListener('click', () => {
-  const user = localStorage.getItem('loggedUser');
-
-  if (confirm(`Tem certeza que deseja excluir o usuário "${user}"?`)) {
-    deleteUser(user, (success) => {
-      if (success) {
-        alert('Usuário excluído!');
-        localStorage.removeItem('loggedUser');
-        showScreen('login');
-      } else {
-        alert('Erro ao excluir usuário.');
-      }
+      lista.appendChild(row);
     });
   }
-});
 
-logoutBtn.addEventListener('click', () => {
-  localStorage.removeItem('loggedUser');
-  usernameInput.value = '';
-  passwordInput.value = '';
-  loginMsg.textContent = '';
-  showScreen('login');
-});
+  function atualizarNomeMercado() {
+    nomeMercadoAtual.textContent = mercadoInput.value.trim() ? `— ${mercadoInput.value.trim()}` : '';
+  }
 
-// ---------------- Listar usuários ----------------
-function listarUsuarios() {
-  userList.innerHTML = '';
+  // ---------------- Eventos ----------------
+  if (adicionarBtn) {
+    adicionarBtn.addEventListener('click', () => {
+      const nome = produtoInput.value.trim();
+      const embalagem = embalagemSelect.value;
+      const valor = parseFloat(valorInput.value);
 
-  const tx = db.transaction(['usuarios'], 'readonly');
-  const store = tx.objectStore('usuarios');
-  const req = store.openCursor();
+      if (!nome || !embalagem || isNaN(valor)) {
+        Swal.fire('Preencha todos os campos corretamente!');
+        return;
+      }
 
-  req.onsuccess = (event) => {
-    const cursor = event.target.result;
+      if (indiceEdicao !== null) {
+        // Atualizar existente
+        const valorAntigo = produtos[indiceEdicao].valor;
+        let cor = null;
+        if (valor < valorAntigo) cor = 'green';
+        else if (valor > valorAntigo) cor = 'red';
+        else cor = produtos[indiceEdicao].cor || null;
 
-    if (cursor) {
-      const { username, password } = cursor.value;
+        produtos[indiceEdicao] = { nome, embalagem, valor, cor };
+        indiceEdicao = null;
+        adicionarBtn.textContent = 'Adicionar';
+        adicionarBtn.classList.remove('orange');
+        adicionarBtn.classList.add('green');
+      } else {
+        // Novo produto
+        produtos.push({ nome, embalagem, valor, cor: null });
+      }
 
-      const container = document.createElement('div');
-      container.style.marginBottom = '15px';
+      produtoInput.value = '';
+      embalagemSelect.selectedIndex = 0;
+      valorInput.value = '';
+      atualizarLista();
+      lista.querySelectorAll('tr').forEach(tr => tr.classList.remove('editando'));
+      atualizarNomeMercado();
+    });
+  }
 
-      const userInput = document.createElement('input');
-      userInput.value = username;
-      userInput.readOnly = true;
+  if (apagarTudoBtn) {
+    apagarTudoBtn.addEventListener('click', () => {
+      produtos = [];
+      atualizarLista();
+      mercadoInput.value = '';
+      produtoInput.value = '';
+      embalagemSelect.selectedIndex = 0;
+      valorInput.value = '';
+      indiceEdicao = null;
+      adicionarBtn.textContent = 'Adicionar';
+      adicionarBtn.classList.remove('orange');
+      adicionarBtn.classList.add('green');
+      atualizarNomeMercado();
+      Swal.fire('Lista limpa!');
+    });
+  }
 
-      const passInput = document.createElement('input');
-      passInput.value = password;
-      passInput.type = 'text';
-      passInput.readOnly = true;
+  if (salvarListaBtn) {
+    salvarListaBtn.addEventListener('click', () => {
+      const mercado = mercadoInput.value.trim();
+      if (!mercado || produtos.length === 0) {
+        Swal.fire('Preencha o nome do mercado e adicione produtos!');
+        return;
+      }
 
-      container.appendChild(userInput);
-      container.appendChild(passInput);
-      userList.appendChild(container);
+      const dataStr = new Date().toLocaleString('pt-BR');
+      let listasSalvas = JSON.parse(localStorage.getItem('listasDeCompras') || '[]');
 
-      cursor.continue();
-    } else if (!userList.innerHTML) {
-      userList.innerHTML = '<p>Nenhum usuário cadastrado.</p>';
+      const indiceExistente = listasSalvas.findIndex(l => l.mercado.toLowerCase() === mercado.toLowerCase());
+
+      if (indiceExistente >= 0) {
+        listasSalvas[indiceExistente].produtos = produtos;
+        listasSalvas[indiceExistente].data = dataStr;
+      } else {
+        listasSalvas.push({ mercado, data: dataStr, produtos });
+      }
+
+      localStorage.setItem('listasDeCompras', JSON.stringify(listasSalvas));
+
+      produtos = [];
+      atualizarLista();
+      mercadoInput.value = '';
+      produtoInput.value = '';
+      embalagemSelect.selectedIndex = 0;
+      valorInput.value = '';
+      indiceEdicao = null;
+      adicionarBtn.textContent = 'Adicionar';
+      adicionarBtn.classList.remove('orange');
+      adicionarBtn.classList.add('green');
+      atualizarNomeMercado();
+      renderizarListasSalvas();
+      Swal.fire('Lista salva com sucesso!');
+    });
+  }
+
+  function renderizarListasSalvas() {
+    if (!listasContainer) return;
+    const listasSalvas = JSON.parse(localStorage.getItem('listasDeCompras') || '[]');
+    listasContainer.innerHTML = '';
+
+    if (listasSalvas.length === 0) {
+      listasContainer.innerHTML = '<p class="grey-text">Nenhuma lista salva.</p>';
+      return;
     }
+
+    listasSalvas.forEach((l, i) => {
+      const div = document.createElement('div');
+      div.classList.add('lista-card');
+      div.innerHTML = `
+        <span class="lista-info">${l.mercado} | ${l.data}</span>
+        <div class="lista-botoes">
+          <button class="btn green small" onclick="abrirLista(${i})">ABRIR</button>
+        </div>
+      `;
+      listasContainer.appendChild(div);
+    });
+  }
+
+  window.abrirLista = (index) => {
+    const listasSalvas = JSON.parse(localStorage.getItem('listasDeCompras') || '[]');
+    const listaSelecionada = listasSalvas[index];
+    if (!listaSelecionada) return;
+
+    produtos = listaSelecionada.produtos.map(p => ({
+      nome: p.nome,
+      embalagem: p.embalagem,
+      valor: parseFloat(p.valor),
+      cor: p.cor || null
+    }));
+
+    mercadoInput.value = listaSelecionada.mercado;
+    atualizarLista();
+    atualizarNomeMercado();
   };
-}
 
-showUsersBtn.addEventListener('click', () => {
-  listarUsuarios();
-  showScreen('userList');
+  renderizarListasSalvas();
+
+  // ---------------- Exportar TXT ----------------
+  if (exportarBtn) {
+    exportarBtn.addEventListener('click', () => {
+      const listas = JSON.parse(localStorage.getItem('listasDeCompras') || '[]');
+      if (listas.length === 0) {
+        Swal.fire('Nenhuma lista salva!');
+        return;
+      }
+
+      let conteudo = '=== RELATÓRIO DE LISTAS SALVAS ===\n\n';
+      listas.forEach(l => {
+        conteudo += `MERCADO: ${l.mercado}    DATA: ${l.data}\n`;
+        conteudo += 'Produto'.padEnd(25) + 'Embalagem'.padEnd(18) + 'Valor (R$)\n';
+        (l.produtos || []).forEach(p => {
+          conteudo += (p.nome || '').padEnd(25) + (p.embalagem || '').padEnd(18) + p.valor.toFixed(2).padEnd(10) + '\n';
+        });
+        conteudo += '\n======================================================\n\n';
+      });
+
+      const blob = new Blob([conteudo], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'listas_salvas.txt';
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+  }
+
+  // ---------------- BottomTabs ----------------
+  const bottomTabs = document.getElementById('bottomTabs');
+  if (bottomTabs) {
+    bottomTabs.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const page = btn.dataset.page;
+        bottomTabs.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        window.location.href = page + '.html';
+      });
+    });
+  }
+
 });
-
-btnBackToApp.addEventListener('click', () => {
-  showApp(localStorage.getItem('loggedUser'));
-});
-
-// BOTTOM TABS – Navegação simples
-	document.querySelectorAll("#bottomTabs button").forEach(btn => {
-	btn.addEventListener("click", () => {
-    const page = btn.dataset.page;
-
-    // Remove active de todos
-    document.querySelectorAll("#bottomTabs button").forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
-
-    // Esconde todas as telas
-    document.querySelectorAll(".screen").forEach(div => div.style.display = "none");
-
-    // Mostra a tela correspondente
-    if (page === "app") {
-    document.getElementById("app").style.display = "flex";
-    } else {
-      window.location.href = "pages/" + page + ".html"; // abre páginas internas
-    }
-  });
-});
-
-// ==================== PULAR SPLASH SE VOLTAR DA HOME ====================
-if (localStorage.getItem("skipSplash") === "yes") {
-  // Oculta imediatamente a splash
-  const splash = document.getElementById("splashScreen");
-  if (splash) splash.style.display = "none";
-
-  // Mostra direto a tela correta
-  const user = localStorage.getItem("loggedUser");
-  if (user) showApp(user);
-  else showScreen("login");
-}
-
-// ==================== SPLASH SCREEN ====================
-
-// Mostra a versão do app na splash
-document.getElementById("splashVersion").textContent = appVersion;
-
-// Some com a splash e mostra login/app
-window.addEventListener("load", () => {
-  setTimeout(() => {
-    document.getElementById("splashScreen").style.display = "none";
-
-    // Se já está logado → abre o app
-    const user = localStorage.getItem("loggedUser");
-    if (user) showApp(user);
-    else showScreen("login");
-  }, 1500); // tempo da splash: 1.5s (pode ajustar)
-});
-
-// ---------------- Service Worker ----------------
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.addEventListener('message', (event) => {
-    if (event.data && event.data.type === 'version') {
-      const versionEl = document.getElementById('mercado-jstech-version');
-      if (versionEl) versionEl.textContent = event.data.version;
-    }
-  });
-
-  navigator.serviceWorker.getRegistrations()
-    .then((regs) => Promise.all(regs.map((reg) => reg.unregister())))
-    .then(() => {
-      return navigator.serviceWorker.register('service-worker.js');
-    })
-    .catch((err) => console.error('Erro SW:', err));
-}
