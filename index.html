@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mercado - JSTech</title>
 
+  <!-- PWA -->
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="images/icons/icon-192.png" type="image/png">
 
@@ -28,18 +29,22 @@
       <img src="images/search-48.png" alt="Pesquisa">
       <span>Pesquisa de Preços</span>
     </button>
+
     <button class="home-btn" onclick="window.location.href='pages/listas.html'">
       <img src="images/report-48.png" alt="Listas">
       <span>Listas Salvas</span>
     </button>
+
     <button class="home-btn" onclick="window.location.href='pages/itens.html'">
       <img src="images/shopping-48.png" alt="Itens">
       <span>Itens da Lista</span>
     </button>
+
     <button class="home-btn" onclick="window.location.href='pages/ferramentas.html'">
       <img src="images/settings-48.png" alt="Ferramentas">
       <span>Ferramentas</span>
     </button>
+
     <button class="home-btn" onclick="window.close()">
       <img src="images/exit-48.png" alt="Sair">
       <span>Sair</span>
@@ -47,47 +52,32 @@
   </div>
 </div>
 
-<footer class="footer">
-  <!-- <p>Versão: <span id="mercado-jstech-version"></span></p> -->
-</footer>
-
 <script src="js/main.js"></script>
 
 <script>
-  // Splash JS — executa apenas no index
-  document.addEventListener('DOMContentLoaded', () => {
-    const splash = document.getElementById('splashScreen');
-    const app = document.getElementById('app');
-    const versionSpan = document.getElementById('splashVersion');
+// Splash
+document.addEventListener('DOMContentLoaded', () => {
+  const splash = document.getElementById('splashScreen');
+  const app = document.getElementById('app');
+  const versionSpan = document.getElementById('splashVersion');
 
-    if(versionSpan) versionSpan.textContent = '1.0.0'; // ou a versão que você tiver
+  if(versionSpan) versionSpan.textContent = '1.0.0';
 
-    // Mostrar splash por 2,5s e depois exibir app
-    setTimeout(() => {
-      if(splash) splash.style.display = 'none';
-      if(app) app.style.display = 'flex';
-    }, 2500);
-  });
+  setTimeout(() => {
+    if(splash) splash.style.display = 'none';
+    if(app) app.style.display = 'flex';
+  }, 2500);
+});
 
-  // ---------------- Service Worker ----------------
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.addEventListener('message', (event) => {
-    if (event.data && event.data.type === 'version') {
-      const versionEl = document.getElementById('mercado-jstech-version');
-      if (versionEl) versionEl.textContent = event.data.version;
-    }
-  });
-
-  navigator.serviceWorker.getRegistrations()
-    .then(regs => Promise.all(regs.map(reg => reg.unregister())))
-    .then(() => {
-      console.log('❌ Service Worker antigo removido');
-      return navigator.serviceWorker.register('service-worker.js');
-    })
-    .then(() => console.log('✅ Novo Service Worker registrado e cache atualizado'))
-    .catch(err => console.error('❌ Falha ao registrar SW:', err));
+// Service Worker CORRETO para GitHub Pages
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("service-worker.js")
+    .then(() => console.log("✔ SW registrado"))
+    .catch(err => console.error("Erro SW:", err));
 }
 </script>
+
 </body>
 </html>
+
 
