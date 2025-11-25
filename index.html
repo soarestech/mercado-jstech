@@ -68,6 +68,26 @@
       if(app) app.style.display = 'flex';
     }, 2500);
   });
+
+  // ---------------- Service Worker ----------------
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.addEventListener('message', (event) => {
+    if (event.data && event.data.type === 'version') {
+      const versionEl = document.getElementById('mercado-jstech-version');
+      if (versionEl) versionEl.textContent = event.data.version;
+    }
+  });
+
+  navigator.serviceWorker.getRegistrations()
+    .then(regs => Promise.all(regs.map(reg => reg.unregister())))
+    .then(() => {
+      console.log('❌ Service Worker antigo removido');
+      return navigator.serviceWorker.register('service-worker.js');
+    })
+    .then(() => console.log('✅ Novo Service Worker registrado e cache atualizado'))
+    .catch(err => console.error('❌ Falha ao registrar SW:', err));
+}
 </script>
 </body>
 </html>
+
