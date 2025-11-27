@@ -1,29 +1,36 @@
 // ---------------- Versão do App automáticA ----------------
-
-// Pega a versão exposta pelo service worker OU usa um fallback temporário
 let appVersion = "carregando...";
 
-if (navigator.serviceWorker && navigator.serviceWorker.controller) {
-  // Tenta pegar a versão que o SW expôs
-  if ('APP_VERSION' in navigator.serviceWorker.controller) {
-    appVersion = navigator.serviceWorker.controller.APP_VERSION;
-  }
+// ⚡ Função para pedir a versão ao Service Worker
+function fetchSWVersion() {
+  return new Promise((resolve) => {
+    if (!navigator.serviceWorker.controller) return resolve(null);
+
+    const msgChannel = new MessageChannel();
+    msgChannel.port1.onmessage = (event) => {
+      if (event.data?.type === "VERSION") resolve(event.data.version);
+      else resolve(null);
+    };
+
+    navigator.serviceWorker.controller.postMessage({ type: "GET_VERSION" }, [msgChannel.port2]);
+  });
 }
 
 // Quando o SW assumir o controle após atualização:
-navigator.serviceWorker?.addEventListener("controllerchange", () => {
-  if ('APP_VERSION' in navigator.serviceWorker.controller) {
-    appVersion = navigator.serviceWorker.controller.APP_VERSION;
+navigator.serviceWorker?.addEventListener("controllerchange", async () => {
+  const splashVersion = document.getElementById('splashVersion');
+  const swVersion = await fetchSWVersion();
+  if (swVersion) appVersion = swVersion;
 
-    // Atualiza a versão na splash caso ela ainda esteja visível
-    const splashVersion = document.getElementById('splashVersion');
-    if (splashVersion) splashVersion.textContent = appVersion;
-  }
+  if (splashVersion) splashVersion.textContent = appVersion;
 });
 
-document.addEventListener('DOMContentLoaded', () => {
-  // Setar versão apenas na Splash
+document.addEventListener('DOMContentLoaded', async () => {
+  // ⚡ Pega versão do SW e atualiza a splash
   const splashVersion = document.getElementById('splashVersion');
+  const swVersion = await fetchSWVersion();
+  if (swVersion) appVersion = swVersion;
+
   if (splashVersion) splashVersion.textContent = appVersion;
 
   // Splash e app principal
