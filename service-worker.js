@@ -1,14 +1,6 @@
 // 🔹 Nome do cache e versão manual (aumente quando fizer deploy)
-// Versão do cache
 const CACHE_VERSION = "1.0.1";
 const CACHE_NAME = `mercado-jstech-${CACHE_VERSION}`;
-
-// ⚡ Escuta mensagens para fornecer a versão
-self.addEventListener("message", (event) => {
-  if (event.data?.type === "GET_VERSION") {
-    event.source.postMessage({ type: "VERSION", version: CACHE_VERSION });
-  }
-});
 
 // Arquivos a serem cacheados (TUDO relativo!)
 const URLS_TO_CACHE = [
@@ -45,12 +37,6 @@ self.addEventListener("activate", (event) => {
       const keys = await caches.keys();
       await Promise.all(keys.map((key) => key !== CACHE_NAME && caches.delete(key)));
       await self.clients.claim();
-
-      // ⚡ Envia a versão para todos os clientes ativos
-      const clients = await self.clients.matchAll();
-      clients.forEach(client => {
-        client.postMessage({ type: "VERSION", version: CACHE_VERSION });
-      });
     })()
   );
 });
