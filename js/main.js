@@ -1,22 +1,7 @@
 // ---------------- Versão do App automáticA ----------------
 let appVersion = "carregando...";
 
-// ⚡ Função para pedir a versão ao SW
-function fetchSWVersion() {
-  return new Promise((resolve) => {
-    if (!navigator.serviceWorker.controller) return resolve(null);
-
-    const msgChannel = new MessageChannel();
-    msgChannel.port1.onmessage = (event) => {
-      if (event.data?.type === "VERSION") resolve(event.data.version);
-      else resolve(null);
-    };
-
-    navigator.serviceWorker.controller.postMessage({ type: "GET_VERSION" }, [msgChannel.port2]);
-  });
-}
-
-// ⚡ Escuta mensagens do SW (para receber a versão automaticamente)
+// ⚡ Escuta mensagens do SW para receber a versão
 navigator.serviceWorker.addEventListener("message", (event) => {
   if (event.data?.type === "VERSION") {
     appVersion = event.data.version;
@@ -26,21 +11,13 @@ navigator.serviceWorker.addEventListener("message", (event) => {
 });
 
 // Quando o SW assumir o controle após atualização
-navigator.serviceWorker?.addEventListener("controllerchange", async () => {
-  const splashVersion = document.getElementById('splashVersion');
-  const swVersion = await fetchSWVersion();
-  if (swVersion) appVersion = swVersion;
-
-  if (splashVersion) splashVersion.textContent = appVersion;
+navigator.serviceWorker?.addEventListener("controllerchange", () => {
+  // Não precisa alterar nada aqui, a mensagem do SW já vai atualizar a versão
 });
 
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', () => {
+  // ⚡ Exibe o fallback inicial "carregando..." imediatamente
   const splashVersion = document.getElementById('splashVersion');
-
-  // ⚡ Pega a versão do SW logo que a página carrega
-  const swVersion = await fetchSWVersion();
-  if (swVersion) appVersion = swVersion;
-
   if (splashVersion) splashVersion.textContent = appVersion;
 
   // Splash e app principal
