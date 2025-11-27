@@ -1,5 +1,5 @@
 // ---------------- Versão do App ----------------
-const appVersion = '1.0.0';
+const appVersion = '1.0.1';
 
 document.addEventListener('DOMContentLoaded', () => {
   // Setar versão apenas na Splash
