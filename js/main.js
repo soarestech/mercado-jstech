@@ -1,7 +1,7 @@
 // ---------------- Versão do App automáticA ----------------
 let appVersion = "carregando...";
 
-// ⚡ Função para pedir a versão ao Service Worker
+// ⚡ Função para pedir a versão ao SW
 function fetchSWVersion() {
   return new Promise((resolve) => {
     if (!navigator.serviceWorker.controller) return resolve(null);
@@ -16,7 +16,16 @@ function fetchSWVersion() {
   });
 }
 
-// Quando o SW assumir o controle após atualização:
+// ⚡ Escuta mensagens do SW (para receber a versão automaticamente)
+navigator.serviceWorker.addEventListener("message", (event) => {
+  if (event.data?.type === "VERSION") {
+    appVersion = event.data.version;
+    const splashVersion = document.getElementById('splashVersion');
+    if (splashVersion) splashVersion.textContent = appVersion;
+  }
+});
+
+// Quando o SW assumir o controle após atualização
 navigator.serviceWorker?.addEventListener("controllerchange", async () => {
   const splashVersion = document.getElementById('splashVersion');
   const swVersion = await fetchSWVersion();
@@ -26,8 +35,9 @@ navigator.serviceWorker?.addEventListener("controllerchange", async () => {
 });
 
 document.addEventListener('DOMContentLoaded', async () => {
-  // ⚡ Pega versão do SW e atualiza a splash
   const splashVersion = document.getElementById('splashVersion');
+
+  // ⚡ Pega a versão do SW logo que a página carrega
   const swVersion = await fetchSWVersion();
   if (swVersion) appVersion = swVersion;
 
