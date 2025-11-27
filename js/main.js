@@ -1,5 +1,25 @@
-// ---------------- Versão do App ----------------
-const appVersion = '1.0.1';
+// ---------------- Versão do App automáticA ----------------
+
+// Pega a versão exposta pelo service worker OU usa um fallback temporário
+let appVersion = "carregando...";
+
+if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+  // Tenta pegar a versão que o SW expôs
+  if ('APP_VERSION' in navigator.serviceWorker.controller) {
+    appVersion = navigator.serviceWorker.controller.APP_VERSION;
+  }
+}
+
+// Quando o SW assumir o controle após atualização:
+navigator.serviceWorker?.addEventListener("controllerchange", () => {
+  if ('APP_VERSION' in navigator.serviceWorker.controller) {
+    appVersion = navigator.serviceWorker.controller.APP_VERSION;
+
+    // Atualiza a versão na splash caso ela ainda esteja visível
+    const splashVersion = document.getElementById('splashVersion');
+    if (splashVersion) splashVersion.textContent = appVersion;
+  }
+});
 
 document.addEventListener('DOMContentLoaded', () => {
   // Setar versão apenas na Splash
