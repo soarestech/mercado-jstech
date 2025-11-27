@@ -3,7 +3,7 @@
 const CACHE_VERSION = "1.0.1";
 const CACHE_NAME = `mercado-jstech-${CACHE_VERSION}`;
 
-// ⚡ Expor versão para o main.js via postMessage
+// ⚡ Escuta mensagens para fornecer a versão
 self.addEventListener("message", (event) => {
   if (event.data?.type === "GET_VERSION") {
     event.source.postMessage({ type: "VERSION", version: CACHE_VERSION });
@@ -41,13 +41,18 @@ self.addEventListener("install", (event) => {
 // ATIVAÇÃO
 self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(
-        keys.map((key) => key !== CACHE_NAME && caches.delete(key))
-      )
-    )
+    (async () => {
+      const keys = await caches.keys();
+      await Promise.all(keys.map((key) => key !== CACHE_NAME && caches.delete(key)));
+      await self.clients.claim();
+
+      // ⚡ Envia a versão para todos os clientes ativos
+      const clients = await self.clients.matchAll();
+      clients.forEach(client => {
+        client.postMessage({ type: "VERSION", version: CACHE_VERSION });
+      });
+    })()
   );
-  self.clients.claim();
 });
 
 // FETCH
