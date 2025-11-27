@@ -1,5 +1,5 @@
 // 🔹 Nome do cache e versão manual (aumente quando fizer deploy)
-const CACHE_VERSION = "1.0.1";
+const CACHE_VERSION = "1.0.2";
 const CACHE_NAME = `mercado-jstech-${CACHE_VERSION}`;
 
 // Arquivos a serem cacheados (TUDO relativo!)
@@ -49,3 +49,4 @@ self.addEventListener("fetch", (event) => {
     })
   );
 });
+
