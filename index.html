@@ -55,18 +55,30 @@
 <script src="js/main.js"></script>
 
 <script>
-// Splash
+// Splash + versão dinâmica
 document.addEventListener('DOMContentLoaded', () => {
   const splash = document.getElementById('splashScreen');
   const app = document.getElementById('app');
   const versionSpan = document.getElementById('splashVersion');
 
-  if(versionSpan) versionSpan.textContent = '1.0.0';
+  // Pega a versão do app definida em main.js
+  if (versionSpan && typeof appVersion !== 'undefined') {
+    versionSpan.textContent = appVersion;
+  }
 
+  if (!splash || !app) return;
+
+  // Inicialmente esconde app principal
+  app.style.display = 'none';
+
+  // Temporizador para sumir a splash
   setTimeout(() => {
-    if(splash) splash.style.display = 'none';
-    if(app) app.style.display = 'flex';
-  }, 2500);
+    splash.classList.add('fade-out'); // aplica fade
+    setTimeout(() => {
+      splash.style.display = 'none';
+      app.style.display = 'flex';
+    }, 800); // duração do fade (CSS)
+  }, 1500); // tempo visível da splash
 });
 
 // Service Worker CORRETO para GitHub Pages
@@ -79,4 +91,3 @@ if ("serviceWorker" in navigator) {
 
 </body>
 </html>
-
