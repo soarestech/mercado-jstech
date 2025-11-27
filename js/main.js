@@ -1,5 +1,5 @@
 // ---------------- Versão do App manual ----------------
-let appVersion = "1.0.1"; // ⚡ Defina a versão manualmente aqui
+let appVersion = "1.0.2"; // ⚡ Defina a versão manualmente aqui
 
 document.addEventListener('DOMContentLoaded', () => {
   const splashVersion = document.getElementById('splashVersion');
