@@ -3,6 +3,9 @@
 const CACHE_VERSION = "1.0.1";
 const CACHE_NAME = `mercado-jstech-${CACHE_VERSION}`;
 
+// Expor versão para o main.js (controlado pelo SW)
+self.APP_VERSION = CACHE_VERSION;
+
 // Arquivos a serem cacheados (TUDO relativo!)
 const URLS_TO_CACHE = [
   "./",
@@ -51,4 +54,3 @@ self.addEventListener("fetch", (event) => {
     })
   );
 });
-
